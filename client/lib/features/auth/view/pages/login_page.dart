@@ -1,8 +1,12 @@
+import 'dart:developer';
+
+import 'package:client/features/auth/repository/auth_remote_repository.dart';
 import 'package:client/features/auth/view/widgets/auth_button.dart';
 import 'package:client/features/auth/view/widgets/generic_text_field.dart';
 import 'package:client/features/auth/view/widgets/navigation_text.dart';
 import 'package:client/features/auth/view/widgets/var_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart' as fp;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,9 +22,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    _email=TextEditingController();
-    _password=TextEditingController();
-    formKey=GlobalKey<FormState>();
+    _email = TextEditingController();
+    _password = TextEditingController();
+    formKey = GlobalKey<FormState>();
     super.initState();
   }
 
@@ -42,17 +46,36 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              VarText(text: "Sign up &", size: 30,),
-              VarText(text: "Begin vibing", size: 50,),
+              VarText(text: "Login", size: 30),
+              VarText(text: "To your vibes", size: 50),
               SizedBox(height: 30),
-              GenericTextField(hintText: "Email", controller: _email,),
+              GenericTextField(hintText: "Email", controller: _email),
               SizedBox(height: 12),
-              GenericTextField(hintText: "Password", obscureText: true, controller: _password,),
+              GenericTextField(
+                hintText: "Password",
+                obscureText: true,
+                controller: _password,
+              ),
               SizedBox(height: 24),
-              AuthButton(onTap: (){}, label: "Login"),
+              AuthButton(
+                onTap: () async {
+                  final response = await AuthRemoteRepository().login(
+                    password: _password.text,
+                    email: _email.text,
+                  );
+                  final val=switch(response){
+                    fp.Left(value: final l)=> l,
+                    fp.Right(value: final r)=> r,
+                  };
+                  log(val.toString());
+                },
+                label: "Login",
+              ),
               SizedBox(height: 18),
-              NavigationText(label1: "Don't have an account? ", label2: "Sign Up"),
-          
+              NavigationText(
+                label1: "Don't have an account? ",
+                label2: "Sign Up",
+              ),
             ],
           ),
         ),

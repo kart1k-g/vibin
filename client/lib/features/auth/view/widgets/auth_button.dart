@@ -26,7 +26,7 @@ class AuthButton extends StatelessWidget {
           shadowColor: Pallete.transparentColor,
         ),
 
-        child: VarText(text: "Sign Up", size: 18, fontWeight: FontWeight.w600),
+        child: VarText(text: label, size: 18, fontWeight: FontWeight.w600),
       ),
     );
   }
