@@ -1,11 +1,18 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:client/core/app_failure/app_failure.dart';
 import 'package:client/core/constants/server_constants.dart';
 import 'package:client/features/auth/model/user_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'auth_remote_repository.g.dart';
+
+@riverpod
+AuthRemoteRepository authRemoteRepository(Ref ref) {
+  return AuthRemoteRepository();
+}
 
 class AuthRemoteRepository {
   Future<Either<AppFailure, UserModel>> signup({
@@ -42,7 +49,7 @@ class AuthRemoteRepository {
       final headers = {"content-type": "application/json"};
       final body = jsonEncode({"email": email, "password": password});
       final response = await http.post(url, headers: headers, body: body);
-      final resBodyMap= jsonDecode(response.body) as Map<String, dynamic>;
+      final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200) {
         return Left(AppFailure(msg: resBodyMap["detail"]));
       }

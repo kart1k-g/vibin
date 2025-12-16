@@ -28,7 +28,7 @@ def signup_user(user: UserCreate, db: Session= (Depends(get_db))):
 
 @router.post("/login")
 def login_user(user: UserLogin, db: Session= (Depends(get_db))):
-    user_db=db.query(User).filter(user.email==User.email).first()
+    user_db=db.query(User).filter(User.email==user.email).first()
     if not user_db:
         raise HTTPException(400, "User not found")
     
