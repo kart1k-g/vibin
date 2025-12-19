@@ -1,6 +1,6 @@
 import uuid
 import bcrypt
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, Header
 
 from database import get_db
 from models.users import User
@@ -8,6 +8,14 @@ from pydantic_schemas.user_create import UserCreate
 from sqlalchemy.orm import Session
 
 from pydantic_schemas.user_login import UserLogin
+
+import os
+from dotenv import load_dotenv
+import jwt
+
+from middleware.auth_middleware import auth_middleware
+
+load_dotenv()
 
 router=APIRouter()
 
@@ -36,4 +44,14 @@ def login_user(user: UserLogin, db: Session= (Depends(get_db))):
 
     if not is_authentic:
         raise HTTPException(400, "Invalid Password")
-    return user_db
+    
+    token=jwt.encode({"id": user_db.id}, os.getenv("JWT_KEY"))
+    return {"token": token, "user": user_db}
+
+
+@router.get("/")
+def get_user_data(db: Session=Depends(get_db), user_dict=Depends(auth_middleware)):
+    user=db.query(User).filter(User.id==user_dict['uid']).first()
+    if not user:
+        raise HTTPException(404, "User not found!")
+    return user
