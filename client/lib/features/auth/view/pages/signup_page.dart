@@ -4,7 +4,7 @@ import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_button.dart';
-import 'package:client/features/auth/view/widgets/generic_text_field.dart';
+import 'package:client/core/widgets/generic_text_field.dart';
 import 'package:client/features/auth/view/widgets/navigation_text.dart';
 import 'package:client/features/auth/view/widgets/var_text.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
