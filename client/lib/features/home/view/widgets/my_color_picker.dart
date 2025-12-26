@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-final paletterColorProvider = StateProvider<Color>((_) => Pallete.cardColor);
+final colorPickerProvider = StateProvider<Color>((_) => Pallete.cardColor);
 
 class MyColorPicker extends ConsumerWidget {
   const MyColorPicker({super.key});
@@ -13,9 +13,9 @@ class MyColorPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ColorPicker(
       pickersEnabled: {ColorPickerType.wheel: true},
-      color: ref.read(paletterColorProvider.notifier).state,
+      color: ref.read(colorPickerProvider.notifier).state,
       onColorChanged: (Color color) {
-        ref.read(paletterColorProvider.notifier).state = color;
+        ref.read(colorPickerProvider.notifier).state = color;
       },
     );
   }

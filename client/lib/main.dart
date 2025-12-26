@@ -4,6 +4,7 @@ import 'package:client/features/auth/repository/auth_local_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/home/view/pages/home_view.dart';
+import 'package:client/features/home/view/pages/upload_song_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Vibin Music App',
       theme: AppTheme.darkThemeMode,
-      home: initView,
+      home: UploadSongPage(),
     );
   }
 }
