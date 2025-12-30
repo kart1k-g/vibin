@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:client/core/app_failure/app_failure.dart';
 import 'package:client/core/constants/server_constants.dart';
+import 'package:client/features/home/models/song_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -41,6 +43,28 @@ class HomeRepository {
         return Left(AppFailure(msg: await res.stream.bytesToString()));
       }
       return Right(await res.stream.bytesToString());
+    } catch (e) {
+      return Left(AppFailure(msg: e.toString()));
+    }
+  }
+
+  Future<Either<AppFailure, List<SongModel>>> getAllSongs(String token) async {
+    try {
+      final res = await http.get(
+        Uri.parse('${ServerConstants.serverURL}/song/list'),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+      var resBodyMap = jsonDecode(res.body);
+      if (res.statusCode != 200) {
+        resBodyMap = resBodyMap as Map<String, dynamic>;
+        return Left(AppFailure(msg: resBodyMap['detail']));
+      }
+
+      List<SongModel> songs = [];
+      for (final map in resBodyMap) {
+        songs.add(SongModel.fromMap(map));
+      }
+      return Right(songs);
     } catch (e) {
       return Left(AppFailure(msg: e.toString()));
     }

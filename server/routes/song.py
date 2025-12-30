@@ -15,7 +15,7 @@ router =APIRouter()
 cloudinary.config( 
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
     api_key = os.getenv("CLOUDINARY_API_KEY"), 
-    api_secret = os.getenv("CLOUDINARY_API_SECRET"), # Click 'View API Keys' above to copy your API secret
+    api_secret = os.getenv("CLOUDINARY_API_SECRET"), 
     secure=True
 )
 
@@ -44,3 +44,8 @@ def upload_song(
     db.commit()
     db.refresh(new_song)
     return new_song
+
+@router.get("/list")
+def list_songs(db: Session=Depends(get_db), auth_details=Depends(auth_middleware)):
+    songs= db.query(Song).all()
+    return songs

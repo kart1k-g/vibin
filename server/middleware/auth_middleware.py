@@ -22,4 +22,4 @@ def auth_middleware(x_auth_token=Header()):
         return {"uid": uid, "token": x_auth_token}
         # return the user info
     except jwt.PyJWTError:
-        raise HTTPException(401, "Invalid jwt token, Authosization failed")
+        raise HTTPException(401, "Invalid jwt token, Authorization failed")

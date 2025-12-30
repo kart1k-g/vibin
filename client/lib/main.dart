@@ -34,7 +34,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Vibin Music App',
       theme: AppTheme.darkThemeMode,
-      home: UploadSongPage(),
+      home: initView,
     );
   }
 }
