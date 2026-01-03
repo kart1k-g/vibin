@@ -35,6 +35,15 @@ class CurrentSongNotifier extends _$CurrentSongNotifier {
     }
   }
 
+  void setSeek(double percentageComplete) {
+    _audioPlayer.seek(
+      Duration(
+        milliseconds:
+            (_audioPlayer.duration!.inMilliseconds * percentageComplete).toInt(),
+      ),
+    );
+  }
+
   Stream<bool> get isPlayingStream => _audioPlayer.playingStream;
 
   Stream<Duration?> get durationStream => _audioPlayer.positionStream;
