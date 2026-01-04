@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:client/core/utils.dart';
 import 'package:client/features/auth/repository/auth_local_repository.dart';
 import 'package:client/features/home/models/song_model.dart';
+import 'package:client/features/home/repositories/home_local_repository.dart';
 import 'package:client/features/home/repositories/home_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,10 +14,12 @@ part 'home_viewmodel.g.dart';
 class HomeViewModel extends _$HomeViewModel {
   late final HomeRepository _homeRepository;
   late final AuthLocalRepository _authLocalRepository;
+  late final HomeLocalRepository _homeLocalRepository;
   @override
   AsyncValue? build() {
     _homeRepository = ref.watch(homeRepositoryProvider);
     _authLocalRepository = ref.watch(authLocalRepositoryProvider);
+    _homeLocalRepository = ref.watch(homeLocalRepositoryProvider);
     return null;
   }
 
@@ -45,6 +48,10 @@ class HomeViewModel extends _$HomeViewModel {
       Right(value: final r) => state = AsyncValue.data(r),
     };
     log(value.toString());
+  }
+
+  List<SongModel> getRecentlyPlayedSongs() {
+    return _homeLocalRepository.loadSongs(limit: 6);
   }
 }
 

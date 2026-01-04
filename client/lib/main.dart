@@ -7,10 +7,16 @@ import 'package:client/features/home/view/pages/home_view.dart';
 import 'package:client/features/home/view/pages/upload_song_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final authLocalRepository = await AuthLocalRepository.init();
+  final dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+
+  await Hive.openBox('songs'); 
   runApp(
     ProviderScope(
       overrides: [
