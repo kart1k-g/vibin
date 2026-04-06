@@ -40,7 +40,7 @@ def login_user(user: UserLogin, db: Session= (Depends(get_db))):
     if not user_db:
         raise HTTPException(400, "User not found")
     
-    is_authentic=bcrypt.checkpw(user.password.encode(), user_db.password)
+    is_authentic=bcrypt.checkpw(user.password.encode(), user_db.password) # type: ignore
 
     if not is_authentic:
         raise HTTPException(400, "Invalid Password")

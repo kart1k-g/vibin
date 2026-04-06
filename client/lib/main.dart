@@ -18,12 +18,12 @@ void main() async {
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
   );
-  
+
   final authLocalRepository = await AuthLocalRepository.init();
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
 
-  await Hive.openBox('songs'); 
+  await Hive.openBox('songs');
   runApp(
     ProviderScope(
       overrides: [
@@ -42,12 +42,12 @@ class MyApp extends ConsumerWidget {
     final initView = ref.watch(currentUserProvider) == null
         ? LoginPage()
         : HomeView();
-    
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vibin Music App',
       theme: AppTheme.darkThemeMode,
-      home: initView,
+      home: initView ,
     );
   }
 }
