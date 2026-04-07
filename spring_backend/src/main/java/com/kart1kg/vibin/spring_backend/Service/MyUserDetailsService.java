@@ -1,7 +1,5 @@
 package com.kart1kg.vibin.spring_backend.Service;
 
-import java.util.UUID;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,10 +17,10 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userID) throws UsernameNotFoundException {
-        Users user=repo.findById(UUID.fromString(userID)).orElse(null);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Users user=repo.findByEmail(email);
         if(user==null){
-            throw new UsernameNotFoundException(userID);
+            throw new UsernameNotFoundException(email);
         }
         return new UserPrincipal(user);
     }

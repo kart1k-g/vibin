@@ -14,13 +14,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.kart1kg.vibin.spring_backend.config.filter.JwtFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter){
         return http.
             authorizeHttpRequests(request -> request.
                 requestMatchers("/api/login", "/api/signup").permitAll().
@@ -29,6 +32,7 @@ public class SecurityConfig {
             formLogin(form-> form.disable()).   //disables login via browser
             csrf(customizer -> customizer.disable()).
             sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).    //jwt auth is stateless
+            addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).
             build();
     }
 

@@ -9,5 +9,5 @@ import com.kart1kg.vibin.spring_backend.Models.Users;
 
 @Repository
 public interface  UserRepo extends JpaRepository<Users, UUID> {
-    
+    public Users findByEmail(String email);
 }
