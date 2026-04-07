@@ -21,7 +21,7 @@ import com.kart1kg.vibin.spring_backend.Service.SongService;
 
 
 @RestController
-@RequestMapping("/song")
+@RequestMapping("/api/song")
 public class SongController {
     private final SongService service;
     public SongController(SongService service){
