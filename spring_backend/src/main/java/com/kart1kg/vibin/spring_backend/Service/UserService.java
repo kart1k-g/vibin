@@ -40,7 +40,7 @@ public class UserService {
         // Verify user credentials
         Authentication auth=authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                user.getUserId().toString(),
+                user.getEmail(),
                 user.getPassword()));
         
         if(!auth.isAuthenticated()){
@@ -58,14 +58,14 @@ public class UserService {
         }
 
         // set user info
-        user.setUserId(UUID.randomUUID());
-
         // password encryption will be done by bcrypt
-        user.setPassword(encoder.encode(user.getPassword()));
+        dbUser=new Users(UUID.randomUUID(), user.getName(), user.getEmail(), encoder.encode(user.getPassword()));
 
         // save user info with encrypted password to db
-        repo.save(user);
-
+        repo.save(dbUser);
+        
+        user.setUserId(dbUser.getUserId());
+        user.setPassword("");
         return user;
     }
     
