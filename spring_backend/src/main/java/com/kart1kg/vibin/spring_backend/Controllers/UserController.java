@@ -1,5 +1,6 @@
 package com.kart1kg.vibin.spring_backend.Controllers;
 
+import org.apache.hc.client5.http.auth.InvalidCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,8 @@ public class UserController {
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>("User with email "+user.getEmail()+" not found", HttpStatus.NOT_FOUND);
+        } catch(InvalidCredentialsException e){
+            return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
         } catch(Exception e){
             return new ResponseEntity<>("An error occured. Retry\n"+e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
