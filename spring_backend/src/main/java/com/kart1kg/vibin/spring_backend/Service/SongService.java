@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kart1kg.vibin.spring_backend.Exceptions.SongNotFoundException;
 import com.kart1kg.vibin.spring_backend.Exceptions.SongUploadException;
 import com.kart1kg.vibin.spring_backend.Models.Song;
+import com.kart1kg.vibin.spring_backend.dto.SongResponseDTO;
 import com.kart1kg.vibin.spring_backend.repo.SongRepo;
 
 @Service
@@ -21,11 +22,12 @@ public class SongService {
         this.cloudinaryService=cloudinaryService;
     }
 
-    public List<Song> getAllSongs(){
-        return repo.findAll();
+    public List<SongResponseDTO> getAllSongs(){
+        List<Song> songs=repo.findAll();
+        return songs.stream().map(SongResponseDTO::modelToDTO).toList();
     }
 
-    public Song uploadSong(Song song ,MultipartFile audio, MultipartFile thumbnail) throws SongUploadException {
+    public SongResponseDTO uploadSong(Song song ,MultipartFile audio, MultipartFile thumbnail) throws SongUploadException {
         try {
             song.setId(UUID.randomUUID());
             String audioUrl=cloudinaryService.uploadAudio(audio, song.getId());
@@ -35,7 +37,7 @@ public class SongService {
             song.setThumbnailUrl(thumbnailUrl);
 
             repo.save(song);
-            return song;
+            return SongResponseDTO.modelToDTO(song);
         } catch (IOException e) {
             cloudinaryService.removeUploadedSong(song);
             throw new SongUploadException();

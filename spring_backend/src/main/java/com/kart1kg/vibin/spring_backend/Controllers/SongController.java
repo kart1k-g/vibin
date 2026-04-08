@@ -18,6 +18,8 @@ import com.kart1kg.vibin.spring_backend.Exceptions.SongNotFoundException;
 import com.kart1kg.vibin.spring_backend.Exceptions.SongUploadException;
 import com.kart1kg.vibin.spring_backend.Models.Song;
 import com.kart1kg.vibin.spring_backend.Service.SongService;
+import com.kart1kg.vibin.spring_backend.dto.APIResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.SongResponseDTO;
 
 
 @RestController
@@ -29,28 +31,57 @@ public class SongController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Song>> getAllSongs() {
-        return new ResponseEntity<>(service.getAllSongs(), HttpStatus.OK);
+    public ResponseEntity<APIResponseDTO<List<SongResponseDTO>>> getAllSongs() {
+        List<SongResponseDTO> dto=service.getAllSongs();
+        return new ResponseEntity<>(
+            new APIResponseDTO<>(
+                true, 
+                "Success", 
+                dto),
+            HttpStatus.OK);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadSong(@RequestPart Song song,
+    public ResponseEntity<APIResponseDTO<SongResponseDTO>> uploadSong(@RequestPart Song song,
         @RequestPart("audio") MultipartFile audio,
         @RequestPart("thumbnail") MultipartFile thumbnail) {
         try {
-            return new ResponseEntity<>(service.uploadSong(song, audio, thumbnail), HttpStatus.OK);
+            SongResponseDTO dto=service.uploadSong(song, audio, thumbnail);
+            return new ResponseEntity<>(
+                new APIResponseDTO<>(
+                    true,
+                    "Success",
+                    dto
+                ),
+                HttpStatus.OK);
         } catch (SongUploadException e) {
-            return new ResponseEntity<>("Error uploading song", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(
+                new APIResponseDTO<>(
+                    false,
+                    "\"Error uploading song\"",
+                    null
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }   
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> postMethodName(@PathVariable UUID id) {
+    public ResponseEntity<APIResponseDTO<String>> postMethodName(@PathVariable UUID id) {
         try {
             service.deleteSongById(id);
-            return new ResponseEntity<>("Song with id "+id.toString()+" deleted successfully", HttpStatus.OK);
+            return new ResponseEntity<>(
+                new APIResponseDTO<>(
+                    true, 
+                    "Song deleted successfully", 
+                    id.toString()),
+                HttpStatus.OK);
         } catch (SongNotFoundException e) {
-            return new ResponseEntity<>("Song with id "+id.toString()+" not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                new APIResponseDTO<>(
+                    false,
+                    "Song with id "+id.toString()+" not found", 
+                    null),
+                HttpStatus.NOT_FOUND);
         }   
     }
     
