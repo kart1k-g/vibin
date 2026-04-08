@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.kart1kg.vibin.spring_backend.Exceptions.EmailAlreadyRegisteredException;
 import com.kart1kg.vibin.spring_backend.Exceptions.UserNotFoundException;
 import com.kart1kg.vibin.spring_backend.Models.Users;
+import com.kart1kg.vibin.spring_backend.dto.LoginResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.SignupResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.UserDetailsResponseDTO;
 import com.kart1kg.vibin.spring_backend.repo.UserRepo;
 
 @Service
@@ -32,7 +35,7 @@ public class UserService {
         this.authenticationManager=authenticationManager;
     }
 
-    public String loginUser(Users user) throws UserNotFoundException, InvalidCredentialsException{
+    public LoginResponseDTO loginUser(Users user) throws UserNotFoundException, InvalidCredentialsException{
         Users dbUser=repo.findByEmail(user.getEmail());
         if(dbUser==null){
             throw new UserNotFoundException();
@@ -49,10 +52,10 @@ public class UserService {
         }
 
         // generate and return a new jwt token if authentication via password is successful
-        return getToken(user);
+        return new LoginResponseDTO(getToken(user));
     }
 
-    public Users signupUser(Users user) throws EmailAlreadyRegisteredException {
+    public SignupResponseDTO signupUser(Users user) throws EmailAlreadyRegisteredException {
         Users dbUser=repo.findByEmail(user.getEmail());
         if(dbUser!=null){
             throw new EmailAlreadyRegisteredException();
@@ -65,16 +68,13 @@ public class UserService {
         // save user info with encrypted password to db
         repo.save(dbUser);
         
-        user.setUserId(dbUser.getUserId());
-        user.setPassword("");
-        return user;
+        return SignupResponseDTO.modelToDTO(user, getToken(dbUser));
     }
 
-    public Users getUser() {
+    public UserDetailsResponseDTO getUser() {
         String email=(String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users user=repo.findByEmail(email);
-        user.setPassword(null);
-        return user;
+        return UserDetailsResponseDTO.modelToDTO(user);
     }
     
     public String getToken(Users user){

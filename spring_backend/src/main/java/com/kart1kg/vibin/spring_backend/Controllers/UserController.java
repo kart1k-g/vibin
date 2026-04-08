@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<APIResponseDTO<LoginResponseDTO>> loginUser(@RequestBody Users user) {
         try {
-            LoginResponseDTO dto=new LoginResponseDTO(service.loginUser(user));
+            LoginResponseDTO dto=service.loginUser(user);
             return ResponseEntity.ok(
                 new APIResponseDTO<>(true, "Success", dto));
         } catch (UserNotFoundException e) {
@@ -60,9 +60,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<APIResponseDTO<SignupResponseDTO>> signupUser(@RequestBody Users user) {
         try {
-            Users created=service.signupUser(user);
-            String token=service.getToken(user);
-            SignupResponseDTO dto=new SignupResponseDTO(created, token);
+            SignupResponseDTO dto=service.signupUser(user);
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
                     true, 
@@ -91,7 +89,7 @@ public class UserController {
         // Secuirty filters are up
         // Request will reach this controller only if token sent was valid and user exists in the db
 
-        UserDetailsResponseDTO dto=new UserDetailsResponseDTO(service.getUser());
+        UserDetailsResponseDTO dto=service.getUser();
         return new ResponseEntity<>(
             new APIResponseDTO<>(
                 true, 
