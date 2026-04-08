@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter){
         return http.
             authorizeHttpRequests(request -> request.
-                requestMatchers("/api/login", "/api/signup").permitAll().
+                requestMatchers("/api/auth/login", "/api/auth/signup").permitAll().
                 anyRequest().authenticated()).
             httpBasic(Customizer.withDefaults()). //for api to enter credentials
             formLogin(form-> form.disable()).   //disables login via browser

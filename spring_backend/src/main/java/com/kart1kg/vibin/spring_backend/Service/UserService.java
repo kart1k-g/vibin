@@ -49,7 +49,7 @@ public class UserService {
         }
 
         // generate and return a new jwt token if authentication via password is successful
-        return jwtService.getToken(user.getEmail());
+        return getToken(user);
     }
 
     public Users signupUser(Users user) throws EmailAlreadyRegisteredException {
@@ -70,11 +70,14 @@ public class UserService {
         return user;
     }
 
-    public Users getUserByToken() {
+    public Users getUser() {
         String email=(String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users user=repo.findByEmail(email);
         user.setPassword(null);
         return user;
     }
     
+    public String getToken(Users user){
+        return jwtService.getToken(user.getEmail());
+    }
 }
