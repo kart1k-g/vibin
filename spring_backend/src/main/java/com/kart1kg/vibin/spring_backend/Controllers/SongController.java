@@ -30,7 +30,6 @@ public class SongController {
 
     @GetMapping("/list")
     public ResponseEntity<List<Song>> getAllSongs() {
-        System.out.println("Listed");
         return new ResponseEntity<>(service.getAllSongs(), HttpStatus.OK);
     }
 
