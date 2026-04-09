@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:client/core/app_failure/app_failure.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/features/auth/model/user_model.dart';
 import 'package:client/features/auth/repository/auth_local_repository.dart';

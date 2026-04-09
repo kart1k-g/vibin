@@ -31,8 +31,12 @@ public class UserController {
     public ResponseEntity<APIResponseDTO<LoginResponseDTO>> loginUser(@RequestBody Users user) {
         try {
             LoginResponseDTO dto=service.loginUser(user);
-            return ResponseEntity.ok(
-                new APIResponseDTO<>(true, "Success", dto));
+            return new ResponseEntity<>(
+                new APIResponseDTO<>(
+                    true, 
+                    "Success", 
+                    dto), 
+                HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
@@ -66,7 +70,7 @@ public class UserController {
                     true, 
                     "Success", 
                     dto), 
-                HttpStatus.OK);
+                HttpStatus.CREATED);
         } catch(EmailAlreadyRegisteredException e){
             return new ResponseEntity<>(
                 new APIResponseDTO<>(

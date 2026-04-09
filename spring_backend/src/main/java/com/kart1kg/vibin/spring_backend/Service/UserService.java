@@ -52,7 +52,7 @@ public class UserService {
         }
 
         // generate and return a new jwt token if authentication via password is successful
-        return new LoginResponseDTO(getToken(user));
+        return LoginResponseDTO.modelToDTO(dbUser, getToken(user));
     }
 
     public SignupResponseDTO signupUser(Users user) throws EmailAlreadyRegisteredException {

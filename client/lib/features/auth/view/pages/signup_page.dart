@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
