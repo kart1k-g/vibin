@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:http_parser/http_parser.dart';
 import 'package:client/core/app_failure/app_failure.dart';
 import 'package:client/core/constants/server_constants.dart';
 import 'package:client/features/home/models/song_model.dart';
@@ -26,17 +28,24 @@ class HomeRepository {
         "POST",
         Uri.parse("${ServerConstants.serverURL}/song/upload"),
       );
+      final songJson = jsonEncode({
+        'artist': artist,
+        'name': songName,
+        'hexcode': hexCode,
+      });
+      req.files.add(
+        http.MultipartFile.fromString(
+          'song',
+          songJson,
+          contentType: MediaType('application', 'json'),
+        ),
+      );
       req
         ..files.addAll([
-          await http.MultipartFile.fromPath('song', selectedAudio.path),
+          await http.MultipartFile.fromPath('audio', selectedAudio.path),
           await http.MultipartFile.fromPath('thumbnail', selectedImage.path),
         ])
-        ..fields.addAll({
-          'artist': artist,
-          'song_name': songName,
-          'hex_code': hexCode,
-        })
-        ..headers.addAll({'x-auth-token': token});
+        ..headers.addAll({'Authorization': 'Bearer $token'});
 
       final res = await req.send();
       if (res.statusCode != 201) {
@@ -52,18 +61,22 @@ class HomeRepository {
     try {
       final res = await http.get(
         Uri.parse('${ServerConstants.serverURL}/song/list'),
-        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
       var resBodyMap = jsonDecode(res.body);
+      resBodyMap = resBodyMap as Map<String, dynamic>;
       if (res.statusCode != 200) {
-        resBodyMap = resBodyMap as Map<String, dynamic>;
-        return Left(AppFailure(msg: resBodyMap['detail']));
+        return Left(AppFailure(msg: resBodyMap['message']));
       }
 
       List<SongModel> songs = [];
-      for (final map in resBodyMap) {
+      for (final map in resBodyMap['data']) {
         songs.add(SongModel.fromMap(map));
       }
+      log(songs.toString());
       return Right(songs);
     } catch (e) {
       return Left(AppFailure(msg: e.toString()));

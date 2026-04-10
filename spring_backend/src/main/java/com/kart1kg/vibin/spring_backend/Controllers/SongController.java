@@ -53,12 +53,12 @@ public class SongController {
                     "Success",
                     dto
                 ),
-                HttpStatus.OK);
+                HttpStatus.CREATED);
         } catch (SongUploadException e) {
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
                     false,
-                    "\"Error uploading song\"",
+                    e.getMessage() == null ? "Error uploading song" : e.getMessage(),
                     null
                 ),
                 HttpStatus.INTERNAL_SERVER_ERROR);

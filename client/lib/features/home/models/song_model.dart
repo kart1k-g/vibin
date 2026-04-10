@@ -41,10 +41,10 @@ class SongModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'song_name': song_name,
-      'hex_code': hex_code,
-      'song_url': song_url,
-      'thumbnail_url': thumbnail_url,
+      'name': song_name,
+      'hexcode': hex_code,
+      'audioUrl': song_url,
+      'thumbnailUrl': thumbnail_url,
       'artist': artist,
     };
   }
@@ -52,10 +52,10 @@ class SongModel {
   factory SongModel.fromMap(Map<String, dynamic> map) {
     return SongModel(
       id: map['id'] ?? '',
-      song_name: map['song_name'] ?? '',
-      hex_code: map['hex_code'] ?? '',
-      song_url: map['song_url'] ?? '',
-      thumbnail_url: map['thumbnail_url'] ?? '',
+      song_name: map['name'] ?? '',
+      hex_code: map['hexcode'] ?? '',
+      song_url: map['audioUrl'] ?? '',
+      thumbnail_url: map['thumbnailUrl'] ?? '',
       artist: map['artist'] ?? '',
     );
   }
