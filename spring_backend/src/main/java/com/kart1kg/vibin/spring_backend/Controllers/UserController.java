@@ -14,7 +14,9 @@ import com.kart1kg.vibin.spring_backend.Exceptions.UserNotFoundException;
 import com.kart1kg.vibin.spring_backend.Models.Users;
 import com.kart1kg.vibin.spring_backend.Service.UserService;
 import com.kart1kg.vibin.spring_backend.dto.APIResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.ErrorResponseDTO;
 import com.kart1kg.vibin.spring_backend.dto.LoginResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.ResponseDTO;
 import com.kart1kg.vibin.spring_backend.dto.SignupResponseDTO;
 import com.kart1kg.vibin.spring_backend.dto.UserDetailsResponseDTO;
 
@@ -28,62 +30,45 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<APIResponseDTO<LoginResponseDTO>> loginUser(@RequestBody Users user) {
+    public ResponseEntity<ResponseDTO> loginUser(@RequestBody Users user) {
         try {
             LoginResponseDTO dto=service.loginUser(user);
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
-                    true, 
                     "Success", 
                     dto), 
                 HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false,
-                    "User with email "+user.getEmail()+" not found",
-                    null), 
+                new ErrorResponseDTO("User with email "+user.getEmail()+" not found"), 
                 HttpStatus.NOT_FOUND);
         } catch(InvalidCredentialsException e){
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false,
-                    "Invalid Credentials",
-                    null), 
+                new ErrorResponseDTO("Invalid Credentials"), 
                 HttpStatus.UNAUTHORIZED);
         } catch(Exception e){
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false,
-                    "An error occured. Retry\n"+e.toString(),
-                    null), 
+                new ErrorResponseDTO("An error occured. Retry\n"+e.toString()), 
                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
     @PostMapping("/signup")
-    public ResponseEntity<APIResponseDTO<SignupResponseDTO>> signupUser(@RequestBody Users user) {
+    public ResponseEntity<ResponseDTO> signupUser(@RequestBody Users user) {
         try {
             SignupResponseDTO dto=service.signupUser(user);
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
-                    true, 
                     "Success", 
                     dto), 
                 HttpStatus.CREATED);
         } catch(EmailAlreadyRegisteredException e){
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false, 
-                    user.getEmail()+" is already registered", 
-                    null), 
+                new ErrorResponseDTO(user.getEmail()+" is already registered"), 
                 HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false, 
-                    "An error occured. Retry\n"+e.toString(), 
-                    null), 
+                new ErrorResponseDTO("An error occured. Retry\n"+e.toString()), 
                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -96,7 +81,6 @@ public class UserController {
         UserDetailsResponseDTO dto=service.getUser();
         return new ResponseEntity<>(
             new APIResponseDTO<>(
-                true, 
                 "Success", 
                 dto), 
             HttpStatus.OK);

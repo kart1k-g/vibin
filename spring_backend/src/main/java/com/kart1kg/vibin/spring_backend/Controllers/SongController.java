@@ -19,6 +19,8 @@ import com.kart1kg.vibin.spring_backend.Exceptions.SongUploadException;
 import com.kart1kg.vibin.spring_backend.Models.Song;
 import com.kart1kg.vibin.spring_backend.Service.SongService;
 import com.kart1kg.vibin.spring_backend.dto.APIResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.ErrorResponseDTO;
+import com.kart1kg.vibin.spring_backend.dto.ResponseDTO;
 import com.kart1kg.vibin.spring_backend.dto.SongResponseDTO;
 
 
@@ -35,52 +37,43 @@ public class SongController {
         List<SongResponseDTO> dto=service.getAllSongs();
         return new ResponseEntity<>(
             new APIResponseDTO<>(
-                true, 
                 "Success", 
                 dto),
             HttpStatus.OK);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<APIResponseDTO<SongResponseDTO>> uploadSong(@RequestPart Song song,
+    public ResponseEntity<ResponseDTO> uploadSong(@RequestPart Song song,
         @RequestPart("audio") MultipartFile audio,
         @RequestPart("thumbnail") MultipartFile thumbnail) {
         try {
             SongResponseDTO dto=service.uploadSong(song, audio, thumbnail);
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
-                    true,
                     "Success",
                     dto
                 ),
                 HttpStatus.CREATED);
         } catch (SongUploadException e) {
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false,
-                    e.getMessage() == null ? "Error uploading song" : e.getMessage(),
-                    null
-                ),
+                new ErrorResponseDTO(
+                    e.getMessage() == null ? "Error uploading song" : e.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }   
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponseDTO<String>> postMethodName(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDTO> postMethodName(@PathVariable UUID id) {
         try {
             service.deleteSongById(id);
             return new ResponseEntity<>(
                 new APIResponseDTO<>(
-                    true, 
                     "Song deleted successfully", 
                     id.toString()),
                 HttpStatus.OK);
         } catch (SongNotFoundException e) {
             return new ResponseEntity<>(
-                new APIResponseDTO<>(
-                    false,
-                    "Song with id "+id.toString()+" not found", 
-                    null),
+                new ErrorResponseDTO("Song with id "+id.toString()+" not found"),
                 HttpStatus.NOT_FOUND);
         }   
     }

@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class APIResponseDTO<T> {
-    private final boolean success;
+public class APIResponseDTO<T> implements ResponseDTO{
     private final String message;
     private final T data;
 }
